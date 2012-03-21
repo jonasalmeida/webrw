@@ -56,10 +56,10 @@ http.createServer(function (req, res) {
 				//var fd = fs.openSync('/home/node/doc/'+AV.get, 'r');
 				//var val = fs.readSync(fd,1000);
 				//val=val[0].split('\n');
-				var val = fs.readFileSync('/home/node/doc/'+AV.doc).toString().split('\n');
+				var val = fs.readFileSync('/home/node/get/'+AV.doc).toString().split('\n');
 				if(val[val.length-1].length==0){val=val.slice(0,val.length-1)} // remove trailing blanks
 				res.end(AV.callback+'('+JSON.stringify(val)+')'); // val[1] is the length of the content, val[0]
-				fs.close(fd);
+				//fs.close(fd);
 			}
 			else { // it is a URL
 				//request({uri:AV.get},function(e,r){res.end(AV.callback+'('+JSON.stringify(r.body.split('\n'))+')')});
