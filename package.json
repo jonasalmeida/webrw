@@ -1,0 +1,5 @@
+{ "name" : "webrw"
+, "version" : "1.0.0"
+, "scripts" : { "start" : "node server.js" }
+, "dependencies" : {"open-uri":"0.3.x","ftp":"0.1.x"}
+}
