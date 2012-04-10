@@ -12,6 +12,8 @@ http.createServer(function (req, res) {
 	}
 	if(!AV.callback){AV.callback='callback'}
 	if(AV.set){
+		var len = 0;
+		var log = function(docId,docLength){fs.open('admin/log', 'a',mode=0666,function(er,fd){fs.write(fd,'webrw.log.doc.push("'+docId+'");webrw.log.len.push('+docLength+');'+'\n');fs.close(fd)})}
 		if(!AV.key){AV.key='UID'+Math.random().toString().slice(2)}
 		if(AV.set=='blob'){// get chunks of data in a data blob
 			var chunks=[];
@@ -24,14 +26,16 @@ http.createServer(function (req, res) {
 			//})
 			req.on('end',function(){ // all chunks in
 				fs.open('/home/node/doc/'+AV.key, 'a',mode=0666,function(er,fd){
-					fs.writeSync(fd,chunks.join(''));
+					var val = chunks.join('');
+					fs.writeSync(fd,val);
 					fs.close(fd)
 					res.end(AV.callback+'('+AV.key+')');
-				})
+					log(AV.key,val.length);
+				});
 			});
 		}
-		else{fs.open('/home/node/doc/'+AV.key, 'a',mode=0666,function(er,fd){fs.write(fd,decodeURIComponent(AV.set)+'\n');fs.close(fd);res.end(AV.callback+'('+AV.key+')')})}
-	}
+		else{fs.open('/home/node/doc/'+AV.key, 'a',mode=0666,function(er,fd){var val=decodeURIComponent(AV.set);fs.write(fd,val+'\n');fs.close(fd);res.end(AV.callback+'('+AV.key+')');log(AV.key,val.length);})}
+	}		
 	else{ // AV.get OR AV.doc
 		if(!AV.get){
 			if(!AV.doc){res.end('ERROR: neither set, get or doc were defined for this call')}
