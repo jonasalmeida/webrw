@@ -13,7 +13,10 @@ http.createServer(function (req, res) {
 	if(!AV.callback){AV.callback='callback'}
 	if(AV.set){
 		var len = 0;
-		var log = function(docId,docLength){fs.open('/home/node/admin/log', 'a',mode=0666,function(er,fd){fs.write(fd,'webrw.log.doc.push("'+docId+'");webrw.log.len.push('+docLength+');'+'\n');fs.close(fd)})}
+		var log = function(docId,docLength){
+			// LOG:  [TIME in mins since 1970] \t [UID] \t [STRING LENGTH]
+			fs.open('/home/node/admin/log', 'a',mode=0666,function(er,fd){fs.write(fd,Math.round(Date.now()/60000)+'\t'+docId+'\t'+docLength+'\n');fs.close(fd)})
+			}
 		if(!AV.key){AV.key='UID'+Math.random().toString().slice(2)}
 		if(AV.set=='blob'){// get chunks of data in a data blob
 			var chunks=[];
