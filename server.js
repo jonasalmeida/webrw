@@ -3,7 +3,10 @@ var fs = require('fs');
 //var request = require('request');
 var openUri = require('open-uri'); // dependency on ftp not recognized on manifest of this node package
 http.createServer(function (req, res) {
-	res.writeHead(200, {'Content-Type': 'text/plain','Access-Control-Allow-Origin':'*'});
+	res.writeHead(200, {
+		'Content-Type': 'text/javascript',
+		'Access-Control-Allow-Origin':'*',
+	});
 	var AVs=req.url.slice(2).split('&'), AVi;
 	AV={};
 	for(var i=0;i<AVs.length;i++){
@@ -28,7 +31,7 @@ http.createServer(function (req, res) {
 			//	console.log('Error:', res);
 			//})
 			req.on('end',function(){ // all chunks in
-				fs.open('/home/node/doc/'+AV.key, 'a',mode=0666,function(er,fd){
+				fs.open('/tmp/'+AV.key, 'a',mode=0666,function(er,fd){
 					var val = chunks.join('');
 					fs.writeSync(fd,val);
 					fs.close(fd)
@@ -37,15 +40,15 @@ http.createServer(function (req, res) {
 				});
 			});
 		}
-		else{fs.open('/home/node/doc/'+AV.key, 'a',mode=0666,function(er,fd){var val=decodeURIComponent(AV.set);fs.write(fd,val+'\n');fs.close(fd);res.end(AV.callback+'('+AV.key+')');log(AV.key,val.length);})}
+		else{fs.open('/tmp/'+AV.key, 'a',mode=0666,function(er,fd){var val=decodeURIComponent(AV.set);fs.write(fd,val+'\n');fs.close(fd);res.end(AV.callback+'('+AV.key+')');log(AV.key,val.length);})}
 	}		
 	else{ // AV.get OR AV.doc
 		if(!AV.get){
 			if(!AV.doc){res.end('ERROR: neither set, get or doc were defined for this call')}
 			else{ // DOC, is this for a key or url?
 				if (!AV.doc.match(/\./g)){ // it is a key
-					res.end(fs.readFileSync('/home/node/doc/'+AV.doc).toString()); // return content as is
-					//var fd = fs.openSync('/home/node/doc/'+AV.doc, 'r');
+					res.end(fs.readFileSync('/home//tmp//doc/'+AV.doc).toString()); // return content as is
+					//var fd = fs.openSync('/tmp/'+AV.doc, 'r');
 					//var val = fs.readSync(fd,1000);
 					//res.end(val[0]); // return content as is
 					//fs.close(fd);
@@ -60,10 +63,10 @@ http.createServer(function (req, res) {
 		else{ // GET
 			// is this a key or a URL
 			if (!AV.get.match(/\./g)){ // it is  KEY
-				//var fd = fs.openSync('/home/node/doc/'+AV.get, 'r');
+				//var fd = fs.openSync('/tmp/'+AV.get, 'r');
 				//var val = fs.readSync(fd,1000);
 				//val=val[0].split('\n');
-				var val = fs.readFileSync('/home/node/doc/'+AV.get).toString().split('\n');
+				var val = fs.readFileSync('/tmp/'+AV.get).toString().split('\n');
 				if(val[val.length-1].length==0){val=val.slice(0,val.length-1)} // remove trailing blanks
 				res.end(AV.callback+'('+JSON.stringify(val)+')'); // val[1] is the length of the content, val[0]
 				//fs.close(fd);
@@ -78,4 +81,4 @@ http.createServer(function (req, res) {
 			}
 		}
 	}
-}).listen(80);
+}).listen(process.env.PORT);
