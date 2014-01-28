@@ -1,10 +1,15 @@
 {
-    "name" : "webrw",
-    "version" : "1.0.0",
+    "name" : "webrwjs",
+    "version" : "0.0.2",
     "engines": {
         "node": "0.8.x",
         "npm": "1.1.x"
     },
+    "repository" :
+      { "type" : "git"
+      , "url" : "https://github.com/jonasalmeida/webrw.git"
+      },
     "scripts" : { "start" : "node server.js" },
-    "dependencies" : {"open-uri":"0.3.x","ftp":"0.1.x"}
+    "dependencies" : {"open-uri":"0.3.x","ftp":"0.1.x"},
+  "author":"Jonas S Almeida"
 }
