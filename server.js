@@ -1,5 +1,6 @@
 var http = require('http'); 
 var fs = require('fs');
+var port = process.env.PORT || 3000; // nitrous will proxy it through SSL through this port
 //var request = require('request');
 var openUri = require('open-uri'); // dependency on ftp not recognized on manifest of this node package
 http.createServer(function (req, res) {
@@ -7,6 +8,7 @@ http.createServer(function (req, res) {
 		'Content-Type': 'text/javascript',
 		'Access-Control-Allow-Origin':'*',
 	});
+  console.log(req.url); // report to the command line what is being asked
 	var AVs=req.url.slice(2).split('&'), AVi;
 	AV={};
 	for(var i=0;i<AVs.length;i++){
@@ -81,4 +83,4 @@ http.createServer(function (req, res) {
 			}
 		}
 	}
-}).listen(process.env.PORT);
+}).listen(port);
